@@ -467,7 +467,7 @@ class ReactPhoneInput extends React.Component {
       "up": this.state.showDropDown
     });
     let inputClasses = classNames({
-      "form-control": true,
+      "form-input": true,
       "invalid-number": !this.props.isValid(this.state.formattedNumber.replace(/\D/g, ''))
     });
 
@@ -479,17 +479,22 @@ class ReactPhoneInput extends React.Component {
     let inputFlagClasses = `flag ${this.state.selectedCountry.iso2}`;
 
     return (
-      <div className="react-tel-input">
+      <div className="form-field-container">
+        <label className={classNames('form-field-container',{'block': this.props.label})}></label>
         <input
-          placeholder="+1 (702) 123-4567"
           onChange={this.handleInput}
           onClick={this.handleInputClick}
           onFocus={this.handleInputFocus}
+          onBlur={this.props.onBlur}
           onKeyDown={this.handleInputKeyDown}
           value={this.state.formattedNumber}
+          defaultValue={this.props.defaultValue}
+          placeholder={this.props.placeholder}
+          required={this.props.required}
+          className={inputClasses}
           ref="numberInput"
           type="tel"
-          className={inputClasses}
+          name="fon"
         />
         <div ref="flagDropDownButton" className={flagViewClasses} onKeyDown={this.handleKeydown} >
           <div
@@ -549,6 +554,7 @@ ReactPhoneInput.defaultProps = {
   autoFormat: true,
   onlyCountries: [],
   excludeCountries: [],
+  type: 'tel',
   defaultCountry: allCountries[0].iso2,
   isValid: isNumberValid,
   flagsImagePath: './flags.png',
@@ -556,6 +562,18 @@ ReactPhoneInput.defaultProps = {
 };
 
 ReactPhoneInput.propTypes = {
+    classes: PropTypes.array,
+    defaultValue: PropTypes.string,
+    error: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
+    hidden: PropTypes.bool,
+    icon: PropTypes.object,
+    name: PropTypes.string.isRequired,
+    onBlur: PropTypes.func,
+    placeholder: PropTypes.string,
+    pristine: PropTypes.bool,
+    type: PropTypes.string,
+    label: PropTypes.string,
+    required: PropTypes.bool
     value: React.PropTypes.string,
     autoFormat: React.PropTypes.bool,
     defaultCountry: React.PropTypes.string,
@@ -571,7 +589,7 @@ export default ReactPhoneInput;
 
 if (__DEV__) {
   const ReactDOM = require('react-dom');
-  
+
   ReactDOM.render(
     <ReactPhoneInput defaultCountry={'us'} preferredCountries={['us', 'de']} excludeCountries={'in'}/>,
     document.getElementById('content'));
